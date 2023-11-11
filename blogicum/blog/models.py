@@ -1,6 +1,10 @@
 from django.db import models
-from blogicum.models import Base
+
 from django.contrib.auth import get_user_model
+
+from core.models import Base
+
+from blog.constants import CHAR_LENGHT
 
 User = get_user_model()
 
@@ -11,7 +15,7 @@ class Post(Base):
         on_delete=models.CASCADE,
         verbose_name='Автор публикации')
     title = models.CharField(
-        max_length=256,
+        max_length=CHAR_LENGHT,
         verbose_name='Заголовок')
     text = models.TextField(
         verbose_name='Текст')
@@ -39,7 +43,7 @@ class Post(Base):
 
 class Category (Base):
     title = models.CharField(
-        max_length=256,
+        max_length=CHAR_LENGHT,
         verbose_name='Заголовок')
     description = models.TextField(
         verbose_name='Описание')
@@ -58,7 +62,7 @@ class Category (Base):
 
 class Location(Base):
     name = models.CharField(
-        max_length=256,
+        max_length=CHAR_LENGHT,
         verbose_name='Название места')
 
     class Meta:
