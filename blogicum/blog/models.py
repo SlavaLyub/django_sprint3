@@ -27,13 +27,14 @@ class Post(Base):
         'Location',
         on_delete=models.SET_NULL,
         null=True, blank=True,
-        verbose_name='Местоположение')
+        verbose_name='Местоположение',
+        related_name='posts')
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_NULL,
         null=True,
         verbose_name='Категория',
-        related_name='categorys')
+        related_name='posts')
 
     class Meta:
         ordering = ('-pub_date',)

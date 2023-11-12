@@ -36,13 +36,19 @@ def post_detail(request, post_id):
 def category_posts(request, category_slug):
     category = get_object_or_404(
         Category.objects.filter(
-            is_published=True
+            # is_published=True
         ),
         slug=category_slug,
     )
     post_list = get_posts().filter(
         category__slug=category_slug,
     )
+    # обращение к связанной таблице с помощью related_name
+    # post_list = category.posts.select_related(
+    #     'author',
+    #     'location',
+    #     'category',
+    # )
 
     context = {
         'category': category,
