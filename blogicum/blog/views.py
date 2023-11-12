@@ -3,6 +3,8 @@ from django.utils import timezone
 
 from .models import Post, Category
 
+from blog.constants import NUMBER_OF_POSTS
+
 
 def get_posts():
     return Post.objects.select_related(
@@ -18,7 +20,7 @@ def get_posts():
 
 def index(request):
     template = 'blog/index.html'
-    posts_index_list = get_posts()[:5]
+    posts_index_list = get_posts()[:NUMBER_OF_POSTS]
     context = {'post_list': posts_index_list}
     return render(request, template, context)
 
@@ -36,19 +38,21 @@ def post_detail(request, post_id):
 def category_posts(request, category_slug):
     category = get_object_or_404(
         Category.objects.filter(
-            # is_published=True
+            is_published=True
         ),
         slug=category_slug,
     )
-    post_list = get_posts().filter(
+    # post_list = get_posts().filter(
+    #     category__slug=category_slug,
+    # )
+    # обращение к связанной таблице с помощью related_name
+    post_list = category.posts.select_related(
+        'author',
+        'location',
+        'category',
+    ).filter(
         category__slug=category_slug,
     )
-    # обращение к связанной таблице с помощью related_name
-    # post_list = category.posts.select_related(
-    #     'author',
-    #     'location',
-    #     'category',
-    # )
 
     context = {
         'category': category,
