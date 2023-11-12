@@ -1,9 +1,9 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.db.models.query import QuerySet
 from django.utils import timezone
-from blog.constants import CHAR_LENGHT
 
+from blog.constants import CHAR_LENGHT
 from core.models import Base
 
 User = get_user_model()
