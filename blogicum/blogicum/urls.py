@@ -12,4 +12,4 @@ if settings.DEBUG:
     import debug_toolbar
     urlpatterns += (path('__debug__/', include(debug_toolbar.urls)),)
 
-handler404 = "blogicum.views.page_not_found_view"
+handler404 = "core.views.page_not_found_view"
