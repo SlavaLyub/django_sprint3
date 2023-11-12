@@ -1,33 +1,22 @@
 from django.shortcuts import render, get_object_or_404
-from django.utils import timezone
-
-from .models import Post, Category
 
 from blog.constants import NUMBER_OF_POSTS
 
-
-def get_posts():
-    return Post.objects.select_related(
-        'location',
-        'category',
-        'author',
-    ).filter(
-        is_published=True,
-        pub_date__lte=timezone.now(),
-        category__is_published=True,
-    )
+from .models import Post, Category
 
 
 def index(request):
     template = 'blog/index.html'
-    posts_index_list = get_posts()[:NUMBER_OF_POSTS]
+    posts_index_list = Post.published.get_queryset().order_by(
+        '-pub_date'
+    )[:NUMBER_OF_POSTS]
     context = {'post_list': posts_index_list}
     return render(request, template, context)
 
 
 def post_detail(request, post_id):
     post = get_object_or_404(
-        get_posts(),
+        Post.published,
         pk=post_id,
     )
     context = {'post': post}
@@ -42,15 +31,7 @@ def category_posts(request, category_slug):
         ),
         slug=category_slug,
     )
-    # post_list = get_posts().filter(
-    #     category__slug=category_slug,
-    # )
-    # обращение к связанной таблице с помощью related_name
-    post_list = category.posts.select_related(
-        'author',
-        'location',
-        'category',
-    ).filter(
+    post_list = Post.published.get_queryset().filter(
         category__slug=category_slug,
     )
 

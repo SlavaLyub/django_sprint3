@@ -1,11 +1,32 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models.query import QuerySet
+from django.utils import timezone
+from blog.constants import CHAR_LENGHT
 
 from core.models import Base
 
-from blog.constants import CHAR_LENGHT
-
 User = get_user_model()
+
+
+class PostQuerySet(models.QuerySet):
+    def get_posts(self):
+        return self.select_related(
+            'location',
+            'category',
+            'author',
+        ).filter(
+            is_published=True,
+            pub_date__lte=timezone.now(),
+            category__is_published=True,
+        )
+
+
+class PostManager(models.Manager):
+    """Делает запрос к модели Post и связанным моделям Location, Category"""
+
+    def get_queryset(self) -> QuerySet:
+        return PostQuerySet(self.model).get_posts()
 
 
 class Post(Base):
@@ -34,9 +55,13 @@ class Post(Base):
         null=True,
         verbose_name='Категория',
         related_name='posts')
+    objects = models.Manager()
+    published = PostManager()
+
+    def get_queryset(self):
+        return super().get_queryset().filter()
 
     class Meta:
-        ordering = ('-pub_date',)
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
 
