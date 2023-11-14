@@ -1,4 +1,5 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_list_or_404, get_object_or_404, render
+from django.utils import timezone
 
 from blog.constants import NUMBER_OF_POSTS
 from blog.models import Category, Post
@@ -25,15 +26,34 @@ def post_detail(request, post_id):
 
 def category_posts(request, category_slug):
     category = get_object_or_404(
-        Category.objects.filter(
-            is_published=True
-        ),
+        Category,
         slug=category_slug,
     )
-    post_list = Post.published.get_queryset().filter(
-        category__slug=category_slug,
+    # get_post_list = Post.published.get_queryset()
+    post_list = get_list_or_404(
+        Post.published.get_queryset(),
+        category__slug=category_slug
     )
-
+    # специально не удалил для повторения в будующем
+    # post_list = category.posts.select_related(
+    #     'category',
+    #     'author',
+    #     'location',
+    # ).filter(
+    #     is_published=True,
+    #     pub_date__lte=timezone.now(),
+    #     category__is_published=True,
+    # )
+    # category = Category.objects.get(slug=category_slug)
+    # category = get_object_or_404(
+    #     Category.objects.filter(
+    #         is_published=True
+    #     ),
+    #     slug=category_slug,
+    # )
+    # post_list = Post.published.get_queryset().filter(
+    #     category__slug=category_slug,
+    # )
     context = {
         'category': category,
         'post_list': post_list,
