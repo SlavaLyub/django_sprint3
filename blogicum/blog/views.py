@@ -1,4 +1,5 @@
 from django.shortcuts import get_list_or_404, get_object_or_404, render
+from django.utils import timezone
 
 from blog.constants import NUMBER_OF_POSTS
 from blog.models import Category, Post
@@ -28,11 +29,19 @@ def category_posts(request, category_slug):
         Category,
         slug=category_slug,
     )
-    # get_post_list = Post.published.get_queryset()
+    # post_list = get_list_or_404(
+    #     Post.published.get_queryset(),
+    #     category__slug=category_slug
+    # )
     post_list = get_list_or_404(
-        Post.published.get_queryset(),
-        category__slug=category_slug
+        category.posts,
+        category__is_published=True,
+        is_published=True,
+        pub_date__lte=timezone.now(),
     )
+    # подскажите есть ли на этом источнике такая же информация как в ссылке
+    # https://djangodoc.ru/3.2/topics/db/managers/
+    # models.py строчка 58 прошлое ревью
     # специально не удалил для повторения в будующем
     # post_list = category.posts.select_related(
     #     'category',
