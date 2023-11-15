@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Location, Category, Post
+from .models import Category, Location, Post
 
 SHORT_STANDARD = 50
 

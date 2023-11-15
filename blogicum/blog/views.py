@@ -63,6 +63,5 @@ def category_posts(request, category_slug):
     # post_list = Post.published.get_queryset().filter(
     #     category__slug=category_slug,
     # )
-    
     template = 'blog/category.html'
     return render(request, template, context)
