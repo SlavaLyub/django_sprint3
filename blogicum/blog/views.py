@@ -1,5 +1,4 @@
 from django.shortcuts import get_list_or_404, get_object_or_404, render
-from django.utils import timezone
 
 from blog.constants import NUMBER_OF_POSTS
 from blog.models import Category, Post
@@ -26,19 +25,21 @@ def post_detail(request, post_id):
 
 def category_posts(request, category_slug):
     category = get_object_or_404(
-        Category,
+        Category.objects.filter(
+            is_published=True,
+        ),
         slug=category_slug,
     )
-    # post_list = get_list_or_404(
-    #     Post.published.get_queryset(),
-    #     category__slug=category_slug
-    # )
+
     post_list = get_list_or_404(
-        category.posts,
-        category__is_published=True,
-        is_published=True,
-        pub_date__lte=timezone.now(),
+        Post.published.get_queryset(),
+        category__slug=category_slug
     )
+    context = {
+        'category': category,
+        'post_list': post_list,
+    }
+
     # подскажите есть ли на этом источнике такая же информация как в ссылке
     # https://djangodoc.ru/3.2/topics/db/managers/
     # models.py строчка 58 прошлое ревью
@@ -62,9 +63,6 @@ def category_posts(request, category_slug):
     # post_list = Post.published.get_queryset().filter(
     #     category__slug=category_slug,
     # )
-    context = {
-        'category': category,
-        'post_list': post_list,
-    }
+    
     template = 'blog/category.html'
     return render(request, template, context)

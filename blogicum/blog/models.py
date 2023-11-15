@@ -58,9 +58,6 @@ class Post(Base):
     objects = models.Manager()
     published = PostManager()
 
-    def get_queryset(self):
-        return super().get_queryset().filter()
-
     class Meta:
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
@@ -84,6 +81,9 @@ class Category (Base):
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
 
+    def __str__(self):
+        return self.title
+
 
 class Location(Base):
     name = models.CharField(
@@ -93,3 +93,6 @@ class Location(Base):
     class Meta:
         verbose_name = 'местоположение'
         verbose_name_plural = 'Местоположения'
+
+    def __str__(self):
+        return self.name
