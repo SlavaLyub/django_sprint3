@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
 
 from blog.constants import NUMBER_OF_POSTS
 from blog.models import Category, Post
-from django.utils import timezone
 
 
 def index(request):
